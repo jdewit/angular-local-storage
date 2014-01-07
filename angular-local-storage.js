@@ -300,7 +300,7 @@ angularLocalStorage.provider('localStorageService', function(){
       var cookies = document.cookie.split(';');
       for(var i = 0; i < cookies.length; i++) {
         thisCookie = cookies[i];
-        
+
         while (thisCookie.charAt(0) === ' ') {
           thisCookie = thisCookie.substring(1, thisCookie.length);
         }
@@ -308,6 +308,10 @@ angularLocalStorage.provider('localStorageService', function(){
         var key = thisCookie.substring(prefixLength, thisCookie.indexOf('='));
         removeFromCookies(key);
       }
+    };
+
+    var setPrefix = function(p) {
+      prefix = p;
     };
 
     return {
@@ -318,6 +322,7 @@ angularLocalStorage.provider('localStorageService', function(){
       keys: getKeysForLocalStorage,
       remove: removeFromLocalStorage,
       clearAll: clearAllFromLocalStorage,
+      setPrefix: setPrefix,
       cookie: {
         set: addToCookies,
         add: addToCookies, //DEPRECATED

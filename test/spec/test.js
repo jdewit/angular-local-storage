@@ -2,31 +2,9 @@ describe('Tests functionality of the localStorage module', function(){
     beforeEach(module('LocalStorageModule', function(localStorageServiceProvider){
         p = localStorageServiceProvider;
     }));
-    var ls, store = [];
+    var ls;
     beforeEach(inject(function(_localStorageService_){
         ls = _localStorageService_;
-        spyOn(ls, 'get').andCallFake(function(key){
-            if(store[key].charAt(0) === "{" || store[key].charAt(0) === "["){
-                return angular.fromJson(store[key]);
-            }else{
-                return store[key];
-            }
-        });
-
-        spyOn(ls, 'set').andCallFake(function(key, val){
-            if(angular.isObject(val) || angular.isArray(val)){
-                val = angular.toJson(val);
-            }
-            if(angular.isNumber(val)){
-                val = val.toString();
-            }
-            return store[key] = val;
-        });
-
-        spyOn(ls, 'clearAll').andCallFake(function(){
-            store = {};
-            return store;
-        });
     }));
 
     it("Should add a value to my local storage", function(){
@@ -51,5 +29,12 @@ describe('Tests functionality of the localStorage module', function(){
         p.setStorageCookie(60, '/path');
         expect(p.cookie.expiry).toBe(60);
         expect(p.cookie.path).toBe('/path');
+    });
+
+    it('Should allow me to change the prefix', function() {
+        ls.setPrefix("myCustomPref");
+        ls.set('test', '123');
+        expect(ls.keys()).toContain('test');
+        expect(ls.keys().length).toBe(1);
     });
 });
