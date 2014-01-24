@@ -3,30 +3,8 @@ describe('Tests functionality of the localStorage module', function(){
         p = localStorageServiceProvider;
     }));
     var ls, store = [];
-    beforeEach(inject(function(_localStorageService_){
-        ls = _localStorageService_;
-        spyOn(ls, 'get').andCallFake(function(key){
-            if(store[key].charAt(0) === "{" || store[key].charAt(0) === "["){
-                return angular.fromJson(store[key]);
-            }else{
-                return store[key];
-            }
-        });
-
-        spyOn(ls, 'set').andCallFake(function(key, val){
-            if(angular.isObject(val) || angular.isArray(val)){
-                val = angular.toJson(val);
-            }
-            if(angular.isNumber(val)){
-                val = val.toString();
-            }
-            return store[key] = val;
-        });
-
-        spyOn(ls, 'clearAll').andCallFake(function(){
-            store = {};
-            return store;
-        });
+    beforeEach(inject(function(localStorageService){
+        ls = localStorageService;
     }));
 
     it("Should add a value to my local storage", function(){
@@ -37,9 +15,9 @@ describe('Tests functionality of the localStorage module', function(){
 
         var obj = { key: 'val' };
         ls.set('object', obj);
+
         var res = ls.get('object');
         expect(res.key).toBe('val');
-
     });
 
     it('Should allow me to set a prefix', function(){
@@ -51,5 +29,14 @@ describe('Tests functionality of the localStorage module', function(){
         p.setStorageCookie(60, '/path');
         expect(p.cookie.expiry).toBe(60);
         expect(p.cookie.path).toBe('/path');
+    });
+
+    it('Should be able to get space left in localstorage', function() {
+      // set a 10 character string 1000 times, 10*16*1000/(8*1024)=19.53kb
+      for (var i=0; i<1000; i++) {
+        ls.set('object' + i, 'some_value');
+      }
+
+      expect(ls.getSpace()).toBe(5097); // 5120kb - 3kb(localstorage cost) - 19.53kb = 5097.47kb
     });
 });

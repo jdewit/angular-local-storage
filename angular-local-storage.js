@@ -300,7 +300,7 @@ angularLocalStorage.provider('localStorageService', function(){
       var cookies = document.cookie.split(';');
       for(var i = 0; i < cookies.length; i++) {
         thisCookie = cookies[i];
-        
+
         while (thisCookie.charAt(0) === ' ') {
           thisCookie = thisCookie.substring(1, thisCookie.length);
         }
@@ -308,6 +308,19 @@ angularLocalStorage.provider('localStorageService', function(){
         var key = thisCookie.substring(prefixLength, thisCookie.indexOf('='));
         removeFromCookies(key);
       }
+    };
+
+    // get space left in KB
+    var getSpace = function () {
+      var allStrings = '';
+
+      for (var key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          allStrings += localStorage[key];
+        }
+      }
+
+      return 5120 - (3 + ((allStrings.length*16)/(8*1024))).toFixed(0);
     };
 
     return {
@@ -318,6 +331,7 @@ angularLocalStorage.provider('localStorageService', function(){
       keys: getKeysForLocalStorage,
       remove: removeFromLocalStorage,
       clearAll: clearAllFromLocalStorage,
+      getSpace: getSpace,
       cookie: {
         set: addToCookies,
         add: addToCookies, //DEPRECATED
