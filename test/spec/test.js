@@ -2,6 +2,7 @@ describe('Tests functionality of the localStorage module', function(){
     beforeEach(module('LocalStorageModule', function(localStorageServiceProvider){
         p = localStorageServiceProvider;
     }));
+
     var ls;
     beforeEach(inject(function(_localStorageService_){
         ls = _localStorageService_;
@@ -15,9 +16,9 @@ describe('Tests functionality of the localStorage module', function(){
 
         var obj = { key: 'val' };
         ls.set('object', obj);
+
         var res = ls.get('object');
         expect(res.key).toBe('val');
-
     });
 
     it('Should allow me to set a prefix', function(){
@@ -36,5 +37,14 @@ describe('Tests functionality of the localStorage module', function(){
         ls.set('test', '123');
         expect(ls.keys()).toContain('test');
         expect(ls.keys().length).toBe(1);
+    });
+
+    it('Should be able to get space left in localstorage', function() {
+      // set a 10 character string 1000 times, 10*16*1000/(8*1024)=19.53kb
+      for (var i=0; i<1000; i++) {
+        ls.set('object' + i, 'some_value');
+      }
+
+      expect(ls.getSpace()).toBe(5097); // 5120kb - 3kb(localstorage cost) - 19.53kb = 5097.47kb
     });
 });

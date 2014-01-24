@@ -314,6 +314,19 @@ angularLocalStorage.provider('localStorageService', function(){
       prefix = p;
     };
 
+    // get space left in KB
+    var getSpace = function () {
+      var allStrings = '';
+
+      for (var key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          allStrings += localStorage[key];
+        }
+      }
+
+      return 5120 - (3 + ((allStrings.length*16)/(8*1024))).toFixed(0);
+    };
+
     return {
       isSupported: browserSupportsLocalStorage,
       set: addToLocalStorage,
@@ -323,6 +336,7 @@ angularLocalStorage.provider('localStorageService', function(){
       remove: removeFromLocalStorage,
       clearAll: clearAllFromLocalStorage,
       setPrefix: setPrefix,
+      getSpace: getSpace,
       cookie: {
         set: addToCookies,
         add: addToCookies, //DEPRECATED
