@@ -323,6 +323,10 @@ angularLocalStorage.provider('localStorageService', function(){
       return 5120 - (3 + ((allStrings.length*16)/(8*1024))).toFixed(0);
     };
 
+    var setPrefix = function(p) {
+      prefix = p;
+    };
+
     return {
       isSupported: browserSupportsLocalStorage,
       set: addToLocalStorage,
@@ -332,6 +336,7 @@ angularLocalStorage.provider('localStorageService', function(){
       remove: removeFromLocalStorage,
       clearAll: clearAllFromLocalStorage,
       getSpace: getSpace,
+      setPrefix: setPrefix,
       cookie: {
         set: addToCookies,
         add: addToCookies, //DEPRECATED
